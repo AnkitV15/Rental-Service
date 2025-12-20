@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: rental-service
+    url: ${APP_URL}
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/RentalApp
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  mail:
+    host: mail.smtp2go.com
+    port: 2525
+    username: ${MAIL_USERNAME} # must be full account email, not just domain
+    password: ${MAIL_PASSWORD}
+    from: ${MAIL_FROM}
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          debug: true # optional, helps log SMTP conversation
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 6048000
+  refresh-expiration: 6048000
