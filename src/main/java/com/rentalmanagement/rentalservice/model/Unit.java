@@ -40,5 +40,6 @@ public class Unit {
 
     @ManyToOne
     @JoinColumn(name = "property_id")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Property property;
 }

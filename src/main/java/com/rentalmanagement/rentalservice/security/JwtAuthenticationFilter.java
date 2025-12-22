@@ -1,9 +1,11 @@
 package com.rentalmanagement.rentalservice.security;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -34,32 +36,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         String token = null;
-        String userId = null;
+        String email = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
-                userId = jwtUtil.getUserIdFromToken(token);
+                email = jwtUtil.getUserIdFromToken(token);
             } catch (Exception e) {
-                log.error("Invalid token");
+                log.error("Invalid token: {}", e.getMessage());
             }
+        } else {
+            log.debug("Authorization header missing or does not start with Bearer");
         }
 
-        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
                 if (jwtUtil.validateToken(token)) {
-                    Owner owner = ownerRepository.findById(userId)
+                    Owner owner = ownerRepository.findByEmail(email)
                             .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
+                    List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                    if (owner.getRole() != null) {
+                        authorities.add(new SimpleGrantedAuthority(owner.getRole()));
+                    }
+
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            owner, null, new ArrayList<>());
+                            owner, null, authorities);
 
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else {
+                    log.debug("Token validation failed");
                 }
             } catch (Exception e) {
                 log.error("Exception occured while validating token: " + e.getMessage());
             }
+        } else if (email == null) {
+            log.debug("No email extracted from token; skipping authentication set");
         }
         filterChain.doFilter(request, response);
     }

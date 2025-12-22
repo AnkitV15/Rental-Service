@@ -13,6 +13,9 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.rentalmanagement.rentalservice.security.RoleConstants;
 
 @Entity
 @Table(name = "owners")
@@ -20,10 +23,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = { "properties", "passwordHash", "verificationToken", "verificationExpires" })
 public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String publicId;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -32,16 +39,19 @@ public class Owner {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String passwordHash;
-    // Store enum as String in DB
     @Builder.Default
-    private String role = "ROLE_OWNER";
+    private String role = RoleConstants.ROLE_OWNER;
 
+    @JsonIgnore
     private String verificationToken;
+    @JsonIgnore
     private LocalDateTime verificationExpires;
 
     private boolean isVerified;
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Property> properties;
 }

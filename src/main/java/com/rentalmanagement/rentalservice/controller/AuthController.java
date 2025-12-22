@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rentalmanagement.rentalservice.dto.LoginRequest;
+import com.rentalmanagement.rentalservice.dto.LoginResponse;
 import com.rentalmanagement.rentalservice.dto.RegisterRequest;
 import com.rentalmanagement.rentalservice.service.AuthService;
 
@@ -36,10 +37,26 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         log.info("Logging in user");
-        authService.login(loginRequest);
-        return ResponseEntity.ok("User logged in successfully");
+        LoginResponse loginResponse = authService.login(loginRequest);
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    /**
+     * Stateless logout endpoint.
+     * <p>
+     * Since we use JWTs with {@code SessionCreationPolicy.STATELESS}, the server
+     * does not keep session state.
+     * Logging out is effectively a client-side operation: the frontend should
+     * delete the stored access token.
+     * </p>
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        log.info("Owner requested logout");
+        // No server-side state to clear; client must discard the token
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
     @GetMapping("/verify-email")

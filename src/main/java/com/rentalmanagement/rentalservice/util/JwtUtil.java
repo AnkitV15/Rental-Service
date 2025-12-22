@@ -32,7 +32,11 @@ public class JwtUtil {
                 .build();
     }
 
-    public String generateToken(String email) {
+    public long getExpirationMillis() {
+        return expiration;
+    }
+
+    public String generateToken(String email, String ownerPublicId, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
@@ -40,10 +44,13 @@ public class JwtUtil {
                 .subject(email)
                 .issuedAt(now)
                 .expiration(expiryDate)
+                .claim("ownerId", ownerPublicId)
+                .claim("role", role)
                 .signWith(getSigningKey())
                 .compact();
     }
 
+    // Returns the subject (currently the owner email) from the token
     public String getUserIdFromToken(String token) {
         Claims claims = getParser()
                 .parseSignedClaims(token)

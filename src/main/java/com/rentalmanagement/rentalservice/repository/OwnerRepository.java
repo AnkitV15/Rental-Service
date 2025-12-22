@@ -6,7 +6,7 @@ import com.rentalmanagement.rentalservice.model.Owner;
 
 import java.util.Optional;
 
-public interface OwnerRepository extends JpaRepository<Owner, String> {
+public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Optional<Owner> findByEmail(String emailString);
 
     boolean existsByEmail(String emailString);

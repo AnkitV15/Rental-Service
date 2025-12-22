@@ -29,6 +29,7 @@ public class Property {
 
     private String name;
     private String address;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

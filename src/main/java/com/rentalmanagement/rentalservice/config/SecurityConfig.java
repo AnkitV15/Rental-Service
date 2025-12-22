@@ -36,17 +36,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disabled for REST APIs
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Public Auth Routes (Login/Register)
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Public auth endpoints
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/verify-email").permitAll()
 
-                        // 2. The Tenant Portal (Magic Link Access)
-                        // We permit all because the logic is handled by the Token in the Lease
+                        // Tenant portal (magic link handles access)
                         .requestMatchers("/api/tenant/portal/**").permitAll()
 
-                        // 3. Owner Dashboard (Locked)
-                        // Only users with ROLE_OWNER can access property management
+                        // Owner dashboard (protected)
                         .requestMatchers("/api/owner/**").hasRole("OWNER")
 
+                        // Everything else requires authentication (including /api/auth/logout)
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

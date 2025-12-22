@@ -33,5 +33,17 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET}
-  expiration: 6048000
+  expiration: 900000
   refresh-expiration: 6048000
+
+cloudinary:
+  cloud_name: ${CLOUDINARY_CLOUD_NAME}
+  api_key: ${CLOUDINARY_API_KEY}
+  api_secret: ${CLOUDINARY_API_SECRET}
+
+razorpay:
+  key_id: ${RAZORPAY_KEY_ID}
+  key_secret: ${RAZORPAY_KEY_SECRET}
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
