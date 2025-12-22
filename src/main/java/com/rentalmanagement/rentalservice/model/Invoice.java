@@ -61,6 +61,7 @@ public class Invoice {
 
     private LocalDateTime createdAt;
     private LocalDateTime paymentDate;
+    private String paymentId;
 
     private java.time.LocalDate dueDate;
     private java.time.LocalDate periodStart;

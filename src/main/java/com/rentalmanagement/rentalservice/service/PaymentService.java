@@ -3,6 +3,7 @@ package com.rentalmanagement.rentalservice.service;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import com.razorpay.Utils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,20 @@ public class PaymentService {
         } catch (RazorpayException e) {
             log.error("Razorpay Error", e);
             throw new RuntimeException("Failed to create payment order: " + e.getMessage());
+        }
+    }
+
+    public boolean verifySignature(String orderId, String paymentId, String signature) {
+        try {
+            JSONObject options = new JSONObject();
+            options.put("razorpay_order_id", orderId);
+            options.put("razorpay_payment_id", paymentId);
+            options.put("razorpay_signature", signature);
+
+            return Utils.verifyPaymentSignature(options, keySecret);
+        } catch (RazorpayException e) {
+            log.error("Signature Verification Failed", e);
+            return false;
         }
     }
 }
