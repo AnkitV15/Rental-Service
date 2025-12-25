@@ -47,14 +47,13 @@ public class EmailService {
         mimeMessageHelper.setSubject(subject);
         mimeMessageHelper.setText(htmlContent, true);
         mailSender.send(message);
-        mailSender.send(message);
     }
 
     @Async
     public void sendInvoiceCreatedEmail(String to, Invoice invoice) {
         try {
             String subject = "New Invoice Generated - " + invoice.getPeriodStart() + " to " + invoice.getPeriodEnd();
-            String magicLink = frontendUrl + "/portal/login?token=" + invoice.getLease().getAccessToken();
+            String magicLink = frontendUrl + "/tenant/login?token=" + invoice.getLease().getAccessToken();
 
             String htmlContent = String.format(
                     """

@@ -22,12 +22,17 @@ import com.rentalmanagement.rentalservice.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -63,7 +68,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000", frontendUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
