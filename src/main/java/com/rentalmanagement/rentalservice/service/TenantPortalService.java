@@ -54,7 +54,13 @@ public class TenantPortalService {
         String orderId = payload.get("orderId");
         String signature = payload.get("signature");
 
-        boolean isValid = paymentService.verifySignature(orderId, paymentId, signature);
+        boolean isValid;
+        try {
+            isValid = paymentService.verifySignature(orderId, paymentId, signature);
+        } catch (Exception e) {
+            throw new RuntimeException("Error verifying payment signature", e);
+        }
+
         if (!isValid) {
             throw new RuntimeException("Invalid Payment Signature");
         }

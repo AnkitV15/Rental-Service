@@ -39,6 +39,12 @@ public class SecurityConfig {
                         // Public auth endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/verify-email").permitAll()
 
+                        // Verification Link
+                        .requestMatchers("/api/leases/verify/**").permitAll()
+
+                        // Payment Endpoints
+                        .requestMatchers("/api/payments/**").permitAll()
+
                         // Tenant portal (magic link handles access)
                         .requestMatchers("/api/tenant/portal/**").permitAll()
 

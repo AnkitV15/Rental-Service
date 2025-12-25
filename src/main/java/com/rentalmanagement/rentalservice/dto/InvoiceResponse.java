@@ -14,6 +14,8 @@ public class InvoiceResponse {
     private Double rentAmount;
     private Double electricityAmount;
     private Double totalAmount;
+    private Double currentMeterReading;
+    private Double usage;
     private String status;
     private LocalDate dueDate;
     private LocalDate periodStart;

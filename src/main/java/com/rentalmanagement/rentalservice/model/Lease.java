@@ -46,5 +46,6 @@ public class Lease {
     private String accessToken;
 
     @OneToMany(mappedBy = "lease", cascade = CascadeType.ALL)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<Invoice> invoices;
 }

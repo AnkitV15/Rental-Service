@@ -1,125 +1,107 @@
-# Rental Service
+# Rental Service Backend
 
-A production-grade Rental Management System for handling properties, tenants, leases, rent payments, and maintenance workflows.
+A production-grade, Spring Boot-based backend for the **RentFlow** property management platform. This service handles the core business logic for properties, tenants, leases, automated billing, payments, and maintenance workflows.
 
-## Features
+## 🚀 Key Features
 
-- User authentication (registration and login) with JWT.
-- Email verification for new users.
-- Property management for owners.
-- Tenant portal for managing leases and payments.
-- Secure API endpoints.
+### 🏢 Property & Unit Management
+- **Hierarchical Structure**: Manage Properties and their individual Units.
+- **Unit Details**: Track status (OCCUPIED/VACANT), usage types (Metered/Flat), and base rent.
+- **Owner Dashboard**: Aggregated statistics for revenue, occupancy, and active concerns.
 
-## Technologies Used
+### 👥 Tenant & Lease Management
+- **Digital Leases**: Create and track lease agreements with start/end dates.
+- **Magic Link Authentication**: Secure, passwordless access for tenants via unique tokens.
+- **Lease History**: Full audit trail of past and current leases.
 
-- Java 21
-- Spring Boot
-- Spring Security (with JWT authentication)
-- Spring Data JPA
-- PostgreSQL
-- Maven
-- Lombok
-- Spring Mail
+### 💰 Billing & Payments
+- **Automated Invoicing**: 
+  - **Flat Rate**: Standard monthly rent.
+  - **Metered**: Calculate utilities based on consumption (e.g., electricity readings).
+- **Payment Integration**: Seamless payment processing via **Razorpay**.
+- **Financial Tracking**: Real-time invoice status (PAID/PENDING/OVERDUE).
 
-## Prerequisites
+### 🛠️ Maintenance System
+- **Ticket Management**: Tenants can raise issues with priority levels (Low to Emergency).
+- **Workflow**: Owners can track status (Pending -> In Progress -> Completed).
+- **Context Aware**: Requests are automatically linked to the active unit and tenant.
 
-Before you begin, ensure you have the following installed:
+---
 
-- [Java JDK 21](https://www.oracle.com/java/technologies/javase-jdk21-downloads.html)
-- [Apache Maven](https://maven.apache.org/download.cgi)
-- [PostgreSQL](https://www.postgresql.org/download/)
+## 🛠️ Technologies Stack
 
-## Setup and Installation
+- **Core**: Java 21, Spring Boot 3.3.4
+- **Database**: PostgreSQL
+- **Security**: Spring Security (JWT for Owners, Token-based for Tenants)
+- **Payments**: Razorpay SDK
+- **Utilities**: Lombok, Spring Mail
+- **Build Tool**: Maven
 
-1. **Clone the repository:**
+---
 
-    ```bash
-    git clone https://github.com/AnkitV15/rental-service.git
-    cd rental-service
-    ```
-
-2. **Configure your environment:**
-    Create a file named `.env` in the root of the project and populate it with the necessary environment variables. See the [Configuration](#configuration) section for details.
-
-3. **Build the project:**
-
-    ```bash
-    mvn clean install
-    ```
-
-## Configuration
-
-The application requires the following environment variables to be set. For local development, you can create a `.env` file in the project root.
-
-```dotenv
-# Application URL
-APP_URL=http://localhost:8080
-
-# PostgreSQL Database
-DB_URL=jdbc:postgresql://localhost:5432/rentalservice
-DB_USERNAME=your_db_username
-DB_PASSWORD=your_db_password
-
-# Email SMTP Server
-MAIL_HOST=smtp.example.com
-MAIL_PORT=587
-MAIL_USERNAME=your_email@example.com
-MAIL_PASSWORD=your_email_password
-
-# JWT Secret
-JWT_SECRET=your_super_secret_jwt_key_that_is_long_and_random
-```
-
-## API Endpoints
-
-Below is a summary of the available API endpoints. For detailed information on request and response formats, please refer to the controller classes in the source code.
+## 🔌 API Endpoints
 
 ### Authentication
+- `POST /api/auth/register` - Register a new property owner
+- `POST /api/auth/login` - Owner login (returns JWT)
 
-- `POST /api/auth/register`: Register a new user.
-- `POST /api/auth/login`: Login an existing user and get a JWT token.
-- `GET /api/auth/verify`: Verify a user's email address with a token.
+### Properties & Units
+- `GET /api/owner/properties` - List all properties
+- `GET /api/units/{id}` - Get specific unit details
+- `PATCH /api/units/{id}` - Update unit details
 
-### Owner
+### Leases (Owner)
+- `POST /api/leases` - Create a new lease
+- `GET /api/leases/unit/{unitId}/active` - Get active lease & magic link for a unit
 
-- `GET /api/owner/properties`: Get all properties for the authenticated owner.
-- `POST /api/owner/properties`: Add a new property.
-- `PUT /api/owner/properties/{id}`: Update an existing property.
-- `DELETE /api/owner/properties/{id}`: Delete a property.
+### Tenant Portal (Magic Link)
+- `GET /api/leases/verify/{token}` - Validate tenant session
+- `GET /api/leases/verify/{token}/invoices` - Fetch tenant invoices
+- `GET /api/leases/verify/{token}/maintenance` - Fetch tenant requests
 
-### Tenant
+### Maintenance
+- `POST /api/maintenance` - Create a request (Tenant)
+- `GET /api/owner/maintenance` - List all requests (Owner)
+- `PUT /api/owner/maintenance/{id}/status` - Update request status
 
-- `GET /api/tenant/leases`: Get all leases for the authenticated tenant.
-- `GET /api/tenant/invoices`: Get all invoices for the authenticated tenant.
+### Billing & Payments
+- `POST /api/invoices/generate` - Trigger invoice generation
+- `POST /api/payments/create-order/{invoiceId}` - Initialize Razorpay order
+- `POST /api/payments/verify` - Webhook/Callback for payment confirmation
 
-## Running the application
+---
 
-You can run the application using the following Maven command:
+## ⚡ Quick Start
 
-```bash
-mvn spring-boot:run
-```
+### Prerequisites
+- Java JDK 21
+- PostgreSQL
+- Maven
 
-The application will be available at `http://localhost:8080`.
+### Installation
 
-## Running tests
+1. **Clone & Configure**
+   ```bash
+   git clone https://github.com/AnkitV15/Rental-Service.git
+   cd rental-service
+   ```
+   Create a `.env` file (or set system env vars):
+   ```properties
+   DB_URL=jdbc:postgresql://localhost:5432/rentalservice
+   DB_USERNAME=postgres
+   DB_PASSWORD=your_password
+   JWT_SECRET=your_secure_secret
+   RAZORPAY_KEY_ID=your_key_id
+   RAZORPAY_KEY_SECRET=your_key_secret
+   ```
 
-To run the tests, use the following command:
+2. **Run the Application**
+   ```bash
+   mvn spring-boot:run
+   ```
 
-```bash
-mvn test
-```
+3. **Access**
+   The API will be live at `http://localhost:8080`.
 
-## Contributing
-
-Contributions are welcome! If you have a suggestion or find a bug, please open an issue or submit a pull request.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License.
+---
+*Built for the RentFlow Platform.*

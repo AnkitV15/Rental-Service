@@ -29,13 +29,22 @@ public class InvoiceController {
 
     @PostMapping("/generate")
     public ResponseEntity<InvoiceResponse> createInvoice(@Valid @RequestBody CreateInvoiceRequest request) {
-        InvoiceResponse invoice = invoiceService.createInvoice(request.getLeaseId(), request.getCurrentMeterReading());
+        InvoiceResponse invoice = invoiceService.createInvoice(request.getUnitId(), request.getCurrentMeterReading());
         return ResponseEntity.ok(invoice);
     }
 
     @GetMapping("/lease/{leaseId}")
     public ResponseEntity<List<InvoiceResponse>> getInvoicesByLease(@PathVariable Long leaseId) {
         List<Invoice> invoices = invoiceRepository.findByLeaseId(leaseId);
+        List<InvoiceResponse> responses = invoices.stream()
+                .map(invoiceService::mapToResponse)
+                .toList();
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/unit/{unitId}")
+    public ResponseEntity<List<InvoiceResponse>> getInvoicesByUnit(@PathVariable Long unitId) {
+        List<Invoice> invoices = invoiceRepository.findByLeaseUnitId(unitId);
         List<InvoiceResponse> responses = invoices.stream()
                 .map(invoiceService::mapToResponse)
                 .toList();

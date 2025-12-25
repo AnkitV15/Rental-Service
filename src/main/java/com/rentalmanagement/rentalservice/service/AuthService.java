@@ -51,7 +51,7 @@ public class AuthService {
                 .publicId(UUID.randomUUID().toString())
                 .username(registerRequest.getUsername())
                 .email(normalizedEmail)
-                .passwordHash(hashedPassword)
+                .password(hashedPassword)
                 .isVerified(false)
                 .verificationToken(UUID.randomUUID().toString())
                 .verificationExpires(LocalDateTime.now().plusHours(24))
@@ -81,7 +81,7 @@ public class AuthService {
         }
 
         Owner owner = ownerOptional.get();
-        boolean passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), owner.getPasswordHash());
+        boolean passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), owner.getPassword());
 
         if (!passwordMatches) {
             log.error("Login failed: Password does not match for user {}", normalizedEmail);
@@ -126,6 +126,32 @@ public class AuthService {
         owner.setVerified(true);
         owner.setVerificationToken(null);
         owner.setVerificationExpires(null);
+        ownerRepository.save(owner);
+    }
+
+    public LoginResponse updateProfile(com.rentalmanagement.rentalservice.model.Owner owner,
+            com.rentalmanagement.rentalservice.dto.UpdateProfileRequest request) {
+        owner.setUsername(request.getUsername());
+        ownerRepository.save(owner);
+
+        // Update token maybe? No, token has internal info. But we return login response
+        // to update client state if needed.
+        // Actually client might just need the updated user object.
+        return LoginResponse.builder()
+                .accessToken("KEPT_OLD_TOKEN_OR_REGENERATE") // Ideally regenerate if username is in token
+                .ownerId(owner.getPublicId())
+                .email(owner.getEmail())
+                .username(owner.getUsername())
+                .role(owner.getRole())
+                .build();
+    }
+
+    public void changePassword(com.rentalmanagement.rentalservice.model.Owner owner,
+            com.rentalmanagement.rentalservice.dto.ChangePasswordRequest request) {
+        if (!passwordEncoder.matches(request.getCurrentPassword(), owner.getPassword())) {
+            throw new InvalidCredentialsException("Current password is incorrect");
+        }
+        owner.setPassword(passwordEncoder.encode(request.getNewPassword()));
         ownerRepository.save(owner);
     }
 

@@ -40,6 +40,8 @@ public class Invoice {
 
     // Missing fields from InvoiceService usage
     private Double previousMeterReading;
+    private Double currentMeterReading;
+    private Double usage; // Units consumed
 
     private String electricityBillUrl; // Link to Cloudinary
 

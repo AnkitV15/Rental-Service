@@ -23,7 +23,7 @@ import com.rentalmanagement.rentalservice.security.RoleConstants;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = { "properties", "passwordHash", "verificationToken", "verificationExpires" })
+@ToString(exclude = { "properties", "password", "verificationToken", "verificationExpires" })
 public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,7 @@ public class Owner {
 
     @Column(nullable = false)
     @JsonIgnore
-    private String passwordHash;
+    private String password;
     @Builder.Default
     private String role = RoleConstants.ROLE_OWNER;
 

@@ -60,6 +60,24 @@ public class PropertyService {
         propertyRepository.delete(property);
     }
 
+    @Transactional
+    public PropertyResponse updateProperty(Long id, PropertyDTO dto, MultipartFile file, Owner owner) {
+        Property property = propertyRepository.findById(id)
+                .filter(p -> p.getOwner().getId().equals(owner.getId()))
+                .orElseThrow(() -> new RuntimeException("Property not found or access denied"));
+
+        property.setName(dto.getName());
+        property.setAddress(dto.getAddress());
+
+        if (file != null && !file.isEmpty()) {
+            String imageUrl = cloudinaryService.uploadFile(file, "properties");
+            property.setImageUrl(imageUrl);
+        }
+
+        Property updated = propertyRepository.save(property);
+        return mapToResponse(updated);
+    }
+
     private PropertyResponse mapToResponse(Property property) {
         return PropertyResponse.builder()
                 .id(property.getId())

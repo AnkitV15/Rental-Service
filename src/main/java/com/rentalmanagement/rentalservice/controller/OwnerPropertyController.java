@@ -95,4 +95,18 @@ public class OwnerPropertyController {
         unitService.deleteUnit(id, owner);
         return ResponseEntity.noContent().build();
     }
+
+    @org.springframework.web.bind.annotation.PutMapping("/units/{id}")
+    public ResponseEntity<UnitResponse> updateUnit(@PathVariable Long id, @Valid @RequestBody UnitDTO unitDto,
+            @AuthenticationPrincipal Owner owner) {
+        return ResponseEntity.ok(unitService.updateUnit(id, unitDto, owner));
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping(value = "/properties/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PropertyResponse> updateProperty(@PathVariable Long id,
+            @Valid @RequestPart("property") PropertyDTO propertyDto,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @AuthenticationPrincipal Owner owner) {
+        return ResponseEntity.ok(propertyService.updateProperty(id, propertyDto, file, owner));
+    }
 }

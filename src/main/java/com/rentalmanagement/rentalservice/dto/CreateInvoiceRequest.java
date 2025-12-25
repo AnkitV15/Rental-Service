@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class CreateInvoiceRequest {
-    @NotNull(message = "leaseId is required")
-    private Long leaseId;
+    @NotNull(message = "unitId is required")
+    private Long unitId;
 
     // Optional for FIXED billing, required for METERED
     private Double currentMeterReading;

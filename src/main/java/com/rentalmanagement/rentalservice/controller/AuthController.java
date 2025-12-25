@@ -33,7 +33,7 @@ public class AuthController {
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
         log.info("Registering user");
         authService.register(registerRequest);
-        return ResponseEntity.ok("User registered successfully");
+        return ResponseEntity.ok(Map.of("message", "User registered successfully"));
     }
 
     @PostMapping("/login")
@@ -64,5 +64,20 @@ public class AuthController {
         log.info("Inside AuthController - verifyEmail() : {}", token);
         authService.verifyEmail(token);
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("Message", "Email Verified Successfully"));
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("/profile")
+    public ResponseEntity<LoginResponse> updateProfile(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.rentalmanagement.rentalservice.model.Owner owner,
+            @Valid @RequestBody com.rentalmanagement.rentalservice.dto.UpdateProfileRequest request) {
+        return ResponseEntity.ok(authService.updateProfile(owner, request));
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("/password")
+    public ResponseEntity<?> changePassword(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal com.rentalmanagement.rentalservice.model.Owner owner,
+            @Valid @RequestBody com.rentalmanagement.rentalservice.dto.ChangePasswordRequest request) {
+        authService.changePassword(owner, request);
+        return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
     }
 }

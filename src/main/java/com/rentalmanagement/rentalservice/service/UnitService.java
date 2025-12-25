@@ -79,6 +79,29 @@ public class UnitService {
         unitRepository.delete(unit);
     }
 
+    @Transactional
+    public UnitResponse updateUnit(Long id, UnitDTO dto, Owner owner) {
+        Unit unit = unitRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Unit not found"));
+
+        if (!unit.getProperty().getOwner().getId().equals(owner.getId())) {
+            throw new InvalidCredentialsException("Access denied");
+        }
+
+        unit.setUnitNumber(dto.getUnitNumber());
+        unit.setBaseRent(dto.getBaseRent());
+        unit.setBillingType(dto.getBillingType());
+        unit.setElectricityRate(dto.getElectricityRate());
+
+        // Only update meter reading if provided, as it might be handled separately
+        if (dto.getLastMeterReading() != null) {
+            unit.setLastMeterReading(dto.getLastMeterReading());
+        }
+
+        Unit updated = unitRepository.save(unit);
+        return mapToResponse(updated);
+    }
+
     private UnitResponse mapToResponse(Unit unit) {
         return UnitResponse.builder()
                 .id(unit.getId())
