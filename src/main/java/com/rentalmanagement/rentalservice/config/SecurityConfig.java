@@ -46,6 +46,7 @@ public class SecurityConfig {
 
                         // Verification Link
                         .requestMatchers("/api/leases/verify/**").permitAll()
+                        .requestMatchers("/api/leases/verify/*/maintenance").permitAll()
 
                         // Payment Endpoints
                         .requestMatchers("/api/payments/**").permitAll()

@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     private ResponseEntity<Map<String, Object>> buildResponse(HttpStatus status, String message) {
@@ -23,27 +26,38 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<Map<String, Object>> handleEmailExists(EmailAlreadyExistsException ex) {
+        log.warn("Email exists: {}", ex.getMessage());
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage()); // 409
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidCredentials(InvalidCredentialsException ex) {
+        log.warn("Invalid credentials: {}", ex.getMessage());
         return buildResponse(HttpStatus.UNAUTHORIZED, ex.getMessage()); // 401
     }
 
     @ExceptionHandler(EmailNotVerifiedException.class)
     public ResponseEntity<Map<String, Object>> handleEmailNotVerified(EmailNotVerifiedException ex) {
+        log.warn("Email not verified: {}", ex.getMessage());
         return buildResponse(HttpStatus.FORBIDDEN, ex.getMessage()); // 403
     }
 
     @ExceptionHandler(VerificationTokenException.class)
     public ResponseEntity<Map<String, Object>> handleVerificationToken(VerificationTokenException ex) {
+        log.warn("Verification token error: {}", ex.getMessage());
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage()); // 400
     }
 
     // Fallback for any other RuntimeException
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntime(RuntimeException ex) {
+        log.error("Runtime exception: ", ex);
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()); // 500
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
+        log.error("Unhandled exception: ", ex);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred: " + ex.getMessage());
     }
 }
