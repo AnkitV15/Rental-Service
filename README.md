@@ -1,6 +1,10 @@
 # Rental Service Backend
 
+![Dashboard Preview](screenshots/Dashboard-Rental.png)
+
 A production-grade, Spring Boot-based backend for the **RentFlow** property management platform. This service handles the core business logic for properties, tenants, leases, automated billing, payments, and maintenance workflows.
+
+---
 
 ## 🚀 Key Features
 
@@ -11,7 +15,7 @@ A production-grade, Spring Boot-based backend for the **RentFlow** property mana
 
 ### 👥 Tenant & Lease Management
 - **Digital Leases**: Create and track lease agreements with start/end dates.
-- **Magic Link Authentication**: Secure, passwordless access for tenants via unique tokens.
+- **Magic Link Authentication**: Secure, passwordless access for tenants via unique tokens sent to email.
 - **Lease History**: Full audit trail of past and current leases.
 
 ### 💰 Billing & Payments
@@ -28,46 +32,31 @@ A production-grade, Spring Boot-based backend for the **RentFlow** property mana
 
 ---
 
-## 🛠️ Technologies Stack
+## 📂 Project Structure
 
-- **Core**: Java 21, Spring Boot 3.3.4
-- **Database**: PostgreSQL
-- **Security**: Spring Security (JWT for Owners, Token-based for Tenants)
-- **Payments**: Razorpay SDK
-- **Utilities**: Lombok, Spring Mail
-- **Build Tool**: Maven
+```bash
+com.rentalmanagement.rentalservice
+├── config          # Security & App Config
+├── controller      # REST API Endpoints
+├── dto             # Data Transfer Objects
+├── model           # JPA Entities (Database Tables)
+├── repository      # Database Access Layer
+├── security        # JWT & Auth Filters
+├── service         # Business Logic
+└── util            # Helper classes
+```
 
 ---
 
-## 🔌 API Endpoints
+## 🛠️ Technology Stack
 
-### Authentication
-- `POST /api/auth/register` - Register a new property owner
-- `POST /api/auth/login` - Owner login (returns JWT)
-
-### Properties & Units
-- `GET /api/owner/properties` - List all properties
-- `GET /api/units/{id}` - Get specific unit details
-- `PATCH /api/units/{id}` - Update unit details
-
-### Leases (Owner)
-- `POST /api/leases` - Create a new lease
-- `GET /api/leases/unit/{unitId}/active` - Get active lease & magic link for a unit
-
-### Tenant Portal (Magic Link)
-- `GET /api/leases/verify/{token}` - Validate tenant session
-- `GET /api/leases/verify/{token}/invoices` - Fetch tenant invoices
-- `GET /api/leases/verify/{token}/maintenance` - Fetch tenant requests
-
-### Maintenance
-- `POST /api/maintenance` - Create a request (Tenant)
-- `GET /api/owner/maintenance` - List all requests (Owner)
-- `PUT /api/owner/maintenance/{id}/status` - Update request status
-
-### Billing & Payments
-- `POST /api/invoices/generate` - Trigger invoice generation
-- `POST /api/payments/create-order/{invoiceId}` - Initialize Razorpay order
-- `POST /api/payments/verify` - Webhook/Callback for payment confirmation
+- **Core**: Java 21, Spring Boot 3.3.4
+- **Database**: PostgreSQL
+- **Security**: Spring Security (JWT for Owners, Magic Links for Tenants)
+- **Payments**: Razorpay SDK
+- **Utilities**: Lombok, Spring Mail, Cloudinary (for file storage)
+- **Build Tool**: Maven
+- **Containerization**: Docker
 
 ---
 
@@ -77,8 +66,9 @@ A production-grade, Spring Boot-based backend for the **RentFlow** property mana
 - Java JDK 21
 - PostgreSQL
 - Maven
+- Docker (Optional)
 
-### Installation
+### Local Development
 
 1. **Clone & Configure**
    ```bash
@@ -93,15 +83,47 @@ A production-grade, Spring Boot-based backend for the **RentFlow** property mana
    JWT_SECRET=your_secure_secret
    RAZORPAY_KEY_ID=your_key_id
    RAZORPAY_KEY_SECRET=your_key_secret
+   FRONTEND_URL=http://localhost:5173 
    ```
 
 2. **Run the Application**
    ```bash
-   mvn spring-boot:run
+   ./mvnw spring-boot:run
    ```
-
-3. **Access**
    The API will be live at `http://localhost:8080`.
 
 ---
-*Built for the RentFlow Platform.*
+
+## 🐳 Deployment (Docker & Railway)
+
+The project includes a multi-stage `Dockerfile` optimized for production.
+
+### Build & Run with Docker
+```bash
+# Build the image
+docker build -t rental-backend .
+
+# Run container (ensure env vars are passed)
+docker run -p 8080:8080 --env-file .env rental-backend
+```
+
+### Deploy to Railway
+1. Push this repository to GitHub.
+2. Connect the repo to **Railway**.
+3. Railway will automatically detect the `Dockerfile` and build it.
+4. Set the required Environment Variables in the Railway dashboard.
+
+---
+
+## 🔌 API Endpoints Summary
+
+| Module | Method | Endpoint | Description |
+| :--- | :--- | :--- | :--- |
+| **Auth** | POST | `/api/auth/login` | Owner Login |
+| **Properties** | GET | `/api/owner/properties` | List Properties |
+| **Leases** | POST | `/api/leases` | Create Lease |
+| **Portal** | GET | `/api/leases/verify/{token}` | Tenant Access |
+| **Payments** | POST | `/api/payments/create-order` | Init Payment |
+
+---
+*Built by [AnkitV15](https://github.com/AnkitV15) for the RentFlow Platform.*
