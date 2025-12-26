@@ -54,6 +54,9 @@ public class SecurityConfig {
                         // Tenant portal (magic link handles access)
                         .requestMatchers("/api/tenant/portal/**").permitAll()
 
+                        // Actuator endpoints
+                        .requestMatchers("/actuator/**").permitAll()
+
                         // Owner dashboard (protected)
                         .requestMatchers("/api/owner/**").hasRole("OWNER")
 
