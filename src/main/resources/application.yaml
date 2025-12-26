@@ -18,7 +18,7 @@ spring:
 
   mail:
     host: mail.smtp2go.com
-    port: 2525
+    port: ${MAIL_PORT}
     username: ${MAIL_USERNAME} # must be full account email, not just domain
     password: ${MAIL_PASSWORD}
     from: ${MAIL_FROM}
