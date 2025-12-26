@@ -33,7 +33,7 @@ build/
 .vscode/
 application-dev.yaml
 # Spring Boot
-.mvn/
+
 /target/
 .idea/
 .classpath
