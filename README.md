@@ -84,6 +84,13 @@ com.rentalmanagement.rentalservice
    RAZORPAY_KEY_ID=your_key_id
    RAZORPAY_KEY_SECRET=your_key_secret
    FRONTEND_URL=http://localhost:5173 
+   CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_api_key
+   CLOUDINARY_API_SECRET=your_api_secret
+   MAIL_USERNAME=your_email@gmail.com
+   MAIL_PASSWORD=your_app_password
+   MAIL_FROM=no-reply@rentem.com
+   APP_URL=http://localhost:8080
    ```
 
 2. **Run the Application**
@@ -126,4 +133,4 @@ docker run -p 8080:8080 --env-file .env rental-backend
 | **Payments** | POST | `/api/payments/create-order` | Init Payment |
 
 ---
-*Built by [AnkitV15](https://github.com/AnkitV15) for the RentFlow Platform.*
+*Built by [AnkitV15](https://github.com/AnkitV15) for the RentEm Platform.*
