@@ -21,5 +21,6 @@ public class InvoiceResponse {
     private LocalDate periodStart;
     private LocalDate periodEnd;
     private String billingMonth;
+    private String paymentId;
     private LocalDateTime createdAt;
 }

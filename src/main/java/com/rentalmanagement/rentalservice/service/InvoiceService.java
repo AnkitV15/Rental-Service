@@ -122,6 +122,7 @@ public class InvoiceService {
                 .periodStart(invoice.getPeriodStart())
                 .periodEnd(invoice.getPeriodEnd())
                 .billingMonth(invoice.getBillingMonth())
+                .paymentId(invoice.getPaymentId())
                 .createdAt(invoice.getCreatedAt())
                 .build();
     }

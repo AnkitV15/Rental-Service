@@ -24,6 +24,7 @@ public class MaintenanceRequestResponse {
     private Long unitId;
     private String propertyName;
     private String tenantName;
+    private Long tenantId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -14,6 +14,9 @@ import java.time.LocalDate;
 public class LeaseDTO {
     private Long id;
     private String tenantName;
+    private String tenantEmail;
+    private String tenantPhoneNumber;
+    private Long tenantId;
     private Long unitId;
     private String unitNumber;
     private Long propertyId;

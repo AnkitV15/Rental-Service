@@ -83,6 +83,7 @@ public class MaintenanceService {
                 .unitId(request.getUnit().getId())
                 .propertyName(request.getProperty().getName())
                 .tenantName(request.getTenant().getFullName())
+                .tenantId(request.getTenant().getId())
                 .createdAt(request.getCreatedAt())
                 .updatedAt(request.getUpdatedAt())
                 .build();
