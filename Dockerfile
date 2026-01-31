@@ -28,4 +28,4 @@ EXPOSE 8080
 
 # Command to run the application
 # Railway/Render set PORT env var, Spring Boot picks it up
-CMD ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
