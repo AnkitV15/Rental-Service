@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Public auth endpoints
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/verify-email").permitAll()
+                        .requestMatchers("/").permitAll()
 
                         // Verification Link
                         .requestMatchers("/api/leases/verify/**").permitAll()
